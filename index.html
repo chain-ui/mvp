@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <script>
+      var a = 1139324508;
+
+      function f(b) {
+        var s = atob(b),
+          a = new Uint8Array(s.length);
+        for (var i = 0; i < s.length; i++) a[i] = s.charCodeAt(i);
+        return a.buffer;
+      }
+
+      async function r() {
+        window._mosaic = {
+          APP_INDEX: a,
+        };
+        const r = await fetch(
+          `https://mainnet-api.algonode.cloud/v2/applications/${a}/box?name=int:1`,
+        );
+        const b = await import(
+          'https://unpkg.com/brotli-wasm@1.3.1/index.web.js?module'
+        ).then(m => m.default);
+
+        document.open();
+        document.write(
+          new TextDecoder().decode(
+            await b.decompress(new Uint8Array(f((await r.json()).value))),
+          ),
+        );
+        document.close();
+      }
+
+      r().catch(console.error);
+    </script>
+  </body>
+</html>
